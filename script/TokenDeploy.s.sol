@@ -6,8 +6,8 @@ import {ERC1967Proxy} from "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.so
 import {Token} from "../src/Token.sol";
 
 contract TokenDeployScript is Script {
-    string constant TOKEN_NAME = "Seamless Points";
-    string constant TOKEN_SYMBOL = "SEAMP";
+    string constant TOKEN_NAME = "OG Points";
+    string constant TOKEN_SYMBOL = "OG Points";
     uint256 constant MINT_AMOUNT = 15_000_000;
     address constant MINT_DESTINATION = address(0);
     address constant TRANSFER_ROLES_TO = address(0);
