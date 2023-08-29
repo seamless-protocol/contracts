@@ -39,16 +39,24 @@ contract Token is Initializable, ERC20Upgradeable, ERC20PermitUpgradeable, Acces
         _grantRole(TRANSFER_ROLE, msg.sender);
     }
 
+    /// @inheritdoc UUPSUpgradeable
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
 
+    /**
+     * @dev See {ERC20Upgradeable-_mint}.
+     */
     function mint(address account, uint256 amount) external onlyRole(MINTER_ROLE) {
         _mint(account, amount);
     }
 
+    /**
+     * @dev See {ERC20Upgradeable-_burn}.
+     */
     function burn(address account, uint256 amount) external onlyRole(MINTER_ROLE) {
         _burn(account, amount);
     }
 
+    /// @inheritdoc ERC20Upgradeable
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
         require(
             from == address(0) || to == address(0) || hasRole(TRANSFER_ROLE, from) || hasRole(TRANSFER_ROLE, to),
