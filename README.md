@@ -28,6 +28,13 @@ Base Testnet: `source .env && forge script script/TokenDeploy.s.sol:TokenDeployS
 Base Mainnet: `source .env && forge script script/TokenDeploy.s.sol:TokenDeployScript --force --rpc-url $BASE_RPC_URL --slow --broadcast --verify --delay 5 --verifier-url $VERIFIER_URL -vvvv`
 Base Tenderly Fork: `source .env && forge script script/TokenDeploy.s.sol:TokenDeployScript --force --rpc-url $TENDERLY_FORK_RPC_URL --slow --broadcast -vvvv`
 
+4. Upgrade
+Base Testnet: `source .env && forge script script/TokenUpgrade.s.sol:TokenUpgradeScript --force --rpc-url $BASE_GOERLI_RPC_URL --slow --broadcast --verify --delay 5 --verifier-url $VERIFIER_URL -vvvv`
+Base Mainnet: `source .env && forge script script/TokenUpgrade.s.sol:TokenUpgradeScript --force --rpc-url $BASE_RPC_URL --slow --broadcast --verify --delay 5 --verifier-url $VERIFIER_URL -vvvv`
+Base Tenderly Fork: `source .env && forge script script/TokenUpgrade.s.sol:TokenUpgradeScript --force --rpc-url $TENDERLY_FORK_RPC_URL --slow --broadcast -vvvv`
+
+5. Manual verification (if required)
+`source .env && forge verify-contract 0x4dB264876bf878a4d0375e7640C6D10faE1dd531 src/Token.sol:Token --verifier-url $VERIFIER_URL`
 ## Deployment Addresses
 
 ### Base Testnet

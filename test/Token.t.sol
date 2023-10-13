@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
-import {Token} from "../src/Token.sol";
+import {Token, GeyserVaultFactory} from "../src/Token.sol";
 import {ERC1967Proxy} from "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {Strings} from "openzeppelin-contracts/utils/Strings.sol";
 
@@ -12,6 +12,7 @@ contract TokenTest is Test {
 
     address constant TEST_ACCOUNT_1 = address(1);
     address constant TEST_ACCOUNT_2 = address(2);
+    address constant GEYSER_MOCK_ADDRESS = address(11);
 
     function setUp() public {
         tokenImplementation = new Token();
@@ -92,12 +93,35 @@ contract TokenTest is Test {
         assertEq(token.balanceOf(address(this)), 0);
         assertEq(token.balanceOf(TEST_ACCOUNT_1), amount);
 
+        token.setGeyserVaultFactory(GEYSER_MOCK_ADDRESS);
+        vm.etch(GEYSER_MOCK_ADDRESS, address(token).code);
         vm.startPrank(TEST_ACCOUNT_1);
+
+        vm.mockCall(
+            GEYSER_MOCK_ADDRESS,
+            abi.encodeWithSelector(GeyserVaultFactory.isInstance.selector, TEST_ACCOUNT_1),
+            abi.encode(true)
+        );
+
+        token.transfer(TEST_ACCOUNT_2, amount);
+
+        assertEq(token.balanceOf(TEST_ACCOUNT_2), amount);
+        assertEq(token.balanceOf(TEST_ACCOUNT_1), 0);
+
+        vm.startPrank(TEST_ACCOUNT_2);
+
+        vm.mockCall(
+            GEYSER_MOCK_ADDRESS,
+            abi.encodeWithSelector(GeyserVaultFactory.isInstance.selector, TEST_ACCOUNT_2),
+            abi.encode(false)
+        );
+        vm.expectRevert("ERC20: token is not transferable");
+        token.transfer(TEST_ACCOUNT_1, amount);
 
         token.transfer(address(this), amount);
 
         assertEq(token.balanceOf(address(this)), amount);
-        assertEq(token.balanceOf(TEST_ACCOUNT_1), 0);
+        assertEq(token.balanceOf(TEST_ACCOUNT_2), 0);
 
         vm.expectRevert("ERC20: token is not transferable");
         token.transfer(TEST_ACCOUNT_2, amount);
